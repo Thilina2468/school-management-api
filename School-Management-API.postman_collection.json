@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "School Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "studentToken", "value": "" },
+    { "key": "teacherToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 Register Student STD-001",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/register/student", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","register","student"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@school.com\",\n  \"password\": \"secret123\"\n}" }
+      }
+    },
+    {
+      "name": "02 Register Student STD-002",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/register/student", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","register","student"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@school.com\",\n  \"password\": \"secret456\"\n}" }
+      }
+    },
+    {
+      "name": "03 Register Teacher TCH-001",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/register/teacher", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","register","teacher"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ms. Smith\",\n  \"email\": \"smith@school.com\",\n  \"password\": \"teach456\",\n  \"modules\": [\"Mathematics\", \"Physics\"]\n}" }
+      }
+    },
+    {
+      "name": "04 Login Teacher (saves token)",
+      "event": [{ "listen": "test", "script": { "exec": ["var j=pm.response.json();","if(j.data&&j.data.token){pm.environment.set('teacherToken',j.data.token);console.log('teacherToken saved');}"] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"smith@school.com\",\n  \"password\": \"teach456\"\n}" }
+      }
+    },
+    {
+      "name": "05 Login Student STD-001 (saves token)",
+      "event": [{ "listen": "test", "script": { "exec": ["var j=pm.response.json();","if(j.data&&j.data.token){pm.environment.set('studentToken',j.data.token);console.log('studentToken saved');}"] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@school.com\",\n  \"password\": \"secret123\"\n}" }
+      }
+    },
+    {
+      "name": "06 TCH: Get all students",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students"] }
+      }
+    },
+    {
+      "name": "07 TCH: Assign modules to STD-001",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" },{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students/STD-001/modules", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students","STD-001","modules"] },
+        "body": { "mode": "raw", "raw": "{\n  \"modules\": [\"Mathematics\", \"Physics\"]\n}" }
+      }
+    },
+    {
+      "name": "08 TCH: Create marks STD-001 (Math:85 Physics:72)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" },{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks"] },
+        "body": { "mode": "raw", "raw": "{\n  \"studentCode\": \"STD-001\",\n  \"marks\": {\n    \"Mathematics\": 85,\n    \"Physics\": 72\n  }\n}" }
+      }
+    },
+    {
+      "name": "09 TCH: Create marks STD-002 (Biology:90)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" },{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks"] },
+        "body": { "mode": "raw", "raw": "{\n  \"studentCode\": \"STD-002\",\n  \"marks\": {\n    \"Biology\": 90\n  }\n}" }
+      }
+    },
+    {
+      "name": "10 TCH: Update mark STD-001 (Math 85->92)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" },{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks/STD-001", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks","STD-001"] },
+        "body": { "mode": "raw", "raw": "{\n  \"studentCode\": \"STD-001\",\n  \"marks\": {\n    \"Mathematics\": 92\n  }\n}" }
+      }
+    },
+    {
+      "name": "11 TCH: Get all marks",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks"] }
+      }
+    },
+    {
+      "name": "12 TCH: Expel STD-002",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" },{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students/STD-002/status", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students","STD-002","status"] },
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"EXPELLED\"\n}" }
+      }
+    },
+    {
+      "name": "13 STD-001: View own profile",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students/STD-001", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students","STD-001"] }
+      }
+    },
+    {
+      "name": "14 STD-001: View own marks",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students/STD-001/marks", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students","STD-001","marks"] }
+      }
+    },
+    {
+      "name": "15 STD-001: View own mark STD-001",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks/STD-001", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks","STD-001"] }
+      }
+    },
+    {
+      "name": "16 CROSS: STD-001 views STD-002 -> 403",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students/STD-002", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students","STD-002"] }
+      }
+    },
+    {
+      "name": "17 CROSS: STD-001 views STD-002 mark STD-002 -> 403",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks/STD-002", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks","STD-002"] }
+      }
+    },
+    {
+      "name": "18 DENY: STD creates mark -> 403",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" },{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks"] },
+        "body": { "mode": "raw", "raw": "{\n  \"studentCode\": \"STD-001\",\n  \"marks\": { \"Mathematics\": 100 }\n}" }
+      }
+    },
+    {
+      "name": "19 DENY: STD views all students -> 403",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/students", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","students"] }
+      }
+    },
+    {
+      "name": "20 DENY: Duplicate email -> 409",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/register/student", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","register","student"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Dup\",\n  \"email\": \"john@school.com\",\n  \"password\": \"test\"\n}" }
+      }
+    },
+    {
+      "name": "21 DENY: Wrong password -> 401",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8080/api/v1/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","auth","login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@school.com\",\n  \"password\": \"wrong\"\n}" }
+      }
+    },
+    {
+      "name": "22 CLEANUP: Delete mark STD-001",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks/STD-001", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks","STD-001"] }
+      }
+    },
+    {
+      "name": "23 CLEANUP: Delete mark STD-002",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+        "url": { "raw": "http://localhost:8080/api/v1/marks/STD-002", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","marks","STD-002"] }
+      }
+    }
+  ]
+}

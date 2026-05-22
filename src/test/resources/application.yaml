@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: school-management-api
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/school_management_db
+    username: root
+    password:
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+server:
+  port: 8080
+
+application:
+  security:
+    jwt:
+      secret-key: 5a2f8c9e1b4d7f3a6e0c8b2d4f9a1e3c7b5d8f0a2c4e6b8d0f1a3c5e7b9d1f
+      expiration: 86400000
